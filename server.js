@@ -56,10 +56,15 @@ app.use('/bundle.js', function(req, res){
 });
 
 var dataFile = path.join(__dirname+'/data/wallHistory.json');
+/*
+var rowRecord = fs.readFile(dataFile, function donereading(err, data){
+  return JSON.parse(data).row.row;
+});*/
+var rowRecordOne = {"row":{"rowOne":"<div class=\"placeholder\" data-reactid=\"4\"></div><div class=\"cell\"><a id=\"anchor_brickOriginal0\" href=\"#brickOriginal0\" class=\"cboxElement\"><div id=\"brickOriginal0\" class=\"brickOriginal\" draggable=\"true\" ondragstart=\"drag(event);\"><div class=\"brick-content\">apple</div><p class=\"brick-ref\"></p></div></a></div><div class=\"placeholder\" data-reactid=\"6\"></div><div class=\"cell-default cboxElement\" data-reactid=\"7\"></div><div class=\"placeholder\" data-reactid=\"8\"></div><div class=\"cell-default cboxElement\" data-reactid=\"9\"></div><div class=\"placeholder\" data-reactid=\"10\"></div>"}};
 
 app.get('/', function(req, res){
   var TopicPage = require('./views/topic_Wall.jsx');
-  var markup = ReactDOMServer.renderToString(React.createElement(TopicPage));
+  var markup = ReactDOMServer.renderToString(React.createElement(TopicPage, {rowRecordOne: rowRecordOne}));
   var htmlHead = ReactDOMServer.renderToStaticMarkup(
     head(
       null,

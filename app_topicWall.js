@@ -2,4 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TopicPage from '../views/topic_Wall.jsx';
 
-ReactDOM.render(<TopicPage/>, document.getElementById("app"));
+let serverRenderRow = document.getElementById('rowOne').innerHTML;
+ReactDOM.render(<TopicPage rowRecord = {serverRenderRow}/>, document.getElementById("app"));
+
