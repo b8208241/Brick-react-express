@@ -5,42 +5,29 @@ export default class TopicPage extends React.Component {
   render() {
     return(
       <section>
-          <PresentWall/>
           <CreateBrick/>
+          <Row id="rowOne" rowRecord = {this.props.rowRecordOne}/>
       </section>
     );
   }
 }
 
-class PresentWall extends React.Component {
+class Row extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-
-    };
+      rowHtml : this.props.rowRecord.row.rowOne
+    }
+    this.loadRow = this.loadRow.bind(this);
   };
 
-  render() {
-    return(
-      <div className="wall" id="presentWall">
-          <PresentWallRow/>
-      </div>
-    )
+  loadRow(){
+    return {__html: this.state.rowHtml};
   }
-}
 
-class PresentWallRow extends React.Component {
   render() {
     return (
-      <div className="row" id = "row1" >
-        <div className="placeholder" ></div>
-        <div className="cell-default" ></div>
-        <div className="placeholder" ></div>
-        <div className="cell-default" ></div>
-        <div className="placeholder" ></div>
-        <div className="cell-default" ></div>
-        <div className="placeholder" ></div>
-      </div>
+      <div className="row" id={this.props.id} dangerouslySetInnerHTML={this.loadRow()} />
     )
   }
 }
