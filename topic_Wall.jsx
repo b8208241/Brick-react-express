@@ -1,12 +1,12 @@
 import React from 'react';
-import dataSubmit from '../js/opp_submit.js';
 
 export default class TopicPage extends React.Component {
   render() {
     return(
       <section>
-          <CreateBrick/>
           <Row id="rowOne" rowRecord = {this.props.rowRecordOne}/>
+          <Row_test/>
+          <CreateBrick/>
       </section>
     );
   }
@@ -16,7 +16,7 @@ class Row extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      rowHtml : this.props.rowRecord.row.rowOne
+      rowHtml : this.props.rowRecord
     }
     this.loadRow = this.loadRow.bind(this);
   };
@@ -32,11 +32,25 @@ class Row extends React.Component {
   }
 }
 
+class Row_test extends React.Component {
+  render() {
+    return (
+      <div className="row">
+        <div className="placeholder" ></div>
+        <div className="cell-default" ></div>
+        <div className="placeholder" ></div>
+        <div className="cell-default" ></div>
+        <div className="placeholder" ></div>
+        <div className="cell-default" ></div>
+        <div className="placeholder" ></div>
+      </div>
+    )
+  }
+}
+
 class CreateBrick extends React.Component {
   constructor(props){
     super(props);
-    this.state = {
-    };
     this.handleSubmit = this.handleSubmit.bind(this);
   };
 
