@@ -21,16 +21,6 @@ require('babel/register')({
     ignore: false
 });
 
-/*
-var mysqlPool = mysql.createPool({
-  host:,
-  user:,
-  password:,
-  database:,
-  connectionLimit:
-})
-*/
-
 app.set('view engine', 'jsx');
 app.set('views', __dirname + '/views');
 app.engine('jsx', require('express-react-views').createEngine({ transformViews: false }));
@@ -56,38 +46,39 @@ app.use('/bundle.js', function(req, res){
 });
 
 var dataFile = path.join(__dirname+'/data/wallHistory.json');
-/*
-var rowRecord = fs.readFile(dataFile, function donereading(err, data){
-  return JSON.parse(data).row.row;
-});*/
-var rowRecordOne = {"row":{"rowOne":"<div class=\"placeholder\" data-reactid=\"4\"></div><div class=\"cell\"><a id=\"anchor_brickOriginal0\" href=\"#brickOriginal0\" class=\"cboxElement\"><div id=\"brickOriginal0\" class=\"brickOriginal\" draggable=\"true\" ondragstart=\"drag(event);\"><div class=\"brick-content\">apple</div><p class=\"brick-ref\"></p></div></a></div><div class=\"placeholder\" data-reactid=\"6\"></div><div class=\"cell-default cboxElement\" data-reactid=\"7\"></div><div class=\"placeholder\" data-reactid=\"8\"></div><div class=\"cell-default cboxElement\" data-reactid=\"9\"></div><div class=\"placeholder\" data-reactid=\"10\"></div>"}};
 
 app.get('/', function(req, res){
   var TopicPage = require('./views/topic_Wall.jsx');
-  var markup = ReactDOMServer.renderToString(React.createElement(TopicPage, {rowRecordOne: rowRecordOne}));
-  var htmlHead = ReactDOMServer.renderToStaticMarkup(
-    head(
-      null,
-      script({src: "https://unpkg.com/axios/dist/axios.min.js"}),
-      script({src: "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"}),
-      script({src: "./opp_topicWall.js", type: "text/javascript"}),
-      link({href: "./colorbox.css", rel: "stylesheet"}),
-      script({src: "./jquery.colorbox.js", type: "text/javascript"}),
-      link({href: "./brick.css", rel: "stylesheet"}),
-      script({src: "./opp_newItem.js", type: "text/javascript"})
-    )
-  );
-  var htmlBody = ReactDOMServer.renderToStaticMarkup(
-    body(
-      null,
-      main({id: 'app', dangerouslySetInnerHTML: {__html: markup}}),
-      script({src: '/bundle.js'})
-    )
-  );
+  jsonfile.readFile(dataFile, function(err, data){
+    if(err) {
+      throw err;
+    }else{
+      var data = data.row.rowOne;
+      var markup = ReactDOMServer.renderToString(React.createElement(TopicPage, {rowRecordOne: data}));
+      var htmlHead = ReactDOMServer.renderToStaticMarkup(
+        head(
+          null,
+          script({src: "https://unpkg.com/axios/dist/axios.min.js"}),
+          script({src: "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"}),
+          script({src: "./opp_topicWall.js", type: "text/javascript"}),
+          link({href: "./colorbox.css", rel: "stylesheet"}),
+          script({src: "./jquery.colorbox.js", type: "text/javascript"}),
+          link({href: "./brick.css", rel: "stylesheet"})
+        )
+      );
+      var htmlBody = ReactDOMServer.renderToStaticMarkup(
+        body(
+          null,
+          main({id: 'app', dangerouslySetInnerHTML: {__html: markup}}),
+          script({src: '/bundle.js'})
+        )
+      );
 
-  res.setHeader('Content-Type', 'text/html');
-  res.end(htmlHead+htmlBody);
-  });
+      res.setHeader('Content-Type', 'text/html');
+      res.end(htmlHead+htmlBody);
+    }
+  })
+});
 
 //var index_brick = 1;
 app.post('/data/rowhistory', function(req, res){
@@ -96,13 +87,13 @@ app.post('/data/rowhistory', function(req, res){
       throw err;
     }else{
       data["row"] = {
-        "row":req.body.row
+        "rowOne":req.body.row
       };
       jsonfile.writeFile(dataFile, data, function(err){
         if(err) throw err;
       });
       //index_brick ++;
-      res.send("Update success!");
+      res.send("Update success!"+data);
     }
   });
 });
