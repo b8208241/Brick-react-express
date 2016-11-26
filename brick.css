@@ -1,0 +1,170 @@
+section {
+	width: 1180px;
+    border: 1px solid #8f967e;
+	font-size: 13px;
+}
+
+.wall {
+	width: 100%;
+	border: 1px dashed;
+	border-color: #8f967e;
+	box-sizing: border-box;
+}
+
+.row {
+	width: 100%;
+	height: 137px;
+	display: flex;
+	box-sizing:border-box;
+	border-color: #8f967e;
+	border: 1px solid ;
+	border-left: none;
+	border-right: none;
+}
+
+.row_Temp {
+	width: 100%;
+	height: 140px;
+	display: flex;
+	box-sizing: border-box;
+	border: 1px  dashed;
+	border-left: none;
+	border-right: none;
+}
+
+.row_Temp_List {
+	width: 100%;
+	height: 100%;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	white-space: nowrap;
+}
+
+.row_Temp_ListItem {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.placeholder {
+	width: 10px;
+	height: 135px;
+	display: inline-block;
+	background-color: #8f967e;
+	margin: 0;
+	padding: 0;
+}
+
+.cell {
+	height: 100%;
+	flex-basis: 100%;
+	background-color: transparent;
+}
+
+.cell-default {
+	height: 100%;
+	flex-basis: 100%;
+	background-color: transparent;
+}
+
+.cell_Temp {
+	height: 100%;
+	flex-basis: 100%;
+	background-color: transparent;
+}
+
+.brickTopic {
+	width:100%;
+    height: 100%;
+	background-image:url(template_BrickTopic.svg);
+	background-repeat:no-repeat;
+	position: relative;
+}
+
+.brickOriginal {
+	width:100%;
+    height: 100%;
+	margin:0;
+	padding:0;
+	background-image:url(template_BrickOriginal.svg);
+	background-repeat:no-repeat;
+	position: relative;
+}
+
+.brickOriginal-Blank{
+	width: 90%;
+	height: 90%;
+	background-color: #d3320d;
+}
+
+.brickTopic-Blank{
+	width: 90%;
+	height: 90%;
+	background-color: #8f967e;
+}
+
+.brick-content {
+	width: 88%;
+	height: 64%;
+	margin: 0;
+	position:absolute;
+	top: 0%;
+	left: 6%;
+	line-height: 1.4em;
+	font-size: 1.3em;
+}
+
+.brick-ref {
+	width: 80%;
+	height: 20%;
+	position: absolute;
+	top: 70%;
+	left: 8%;
+	line-height: 1.1em;
+	font-size: 1 em;
+}
+
+.add-dialogbox {
+	width:500px;
+  height: 200px;
+	display: none;
+}
+
+.input-new {
+	width: 80%;
+}
+
+.pasteHolder {
+	position: absolute;
+	left: -9999px;
+}
+
+.conclusion_Entry {
+}
+
+.conclusion_content {
+	width:500pxpx;
+    height: 200px;
+	position: relative;
+	display: none;
+}
+
+
+#paste {
+    padding: 1%;
+    border: 3px ridge;
+    /*width: 300px;*/
+}
+
+#paste label{
+    display: inline-block;
+    width: 20%;
+    min-width: 100px;
+}
+
+.dragover {
+	background-color: #99ff99;
+}
+
+.not_dragover  {
+	background-color: initial;
+}

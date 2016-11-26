@@ -1,0 +1,40 @@
+section {
+  width: 1180px;
+  height: 600px;
+  border: 1px solid #8f967e;
+  position: relative;
+  margin-top: auto;
+  margin-left: auto;
+  margin-right: auto;
+	font-size: 13px;
+}
+
+.topic-Row {
+  width: 75%;
+  height: 140px;
+  border-top: solid;
+  border-bottom: solid;
+  position: relative;;
+  top: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.topic-Row-Brick{
+  display: inline-block;
+  width: 250px;
+  height: 137px;
+  border: 1px solid;
+  position: relative;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.topic-New{
+  display: block;
+  position: relative;
+  top: 55%;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
