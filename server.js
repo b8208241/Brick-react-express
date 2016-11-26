@@ -21,6 +21,171 @@ require('babel/register')({
     ignore: false
 });
 
+var wallHistory = path.join(__dirname+'/data/wallHistory.json');
+var topicFile = path.join(__dirname+'/data/topicHistory.json');
+
+const server_Get =  {
+  index: function(req, res){
+    let Index = require('./views/Index.jsx');
+    jsonfile.readFile(topicFile, function(err, data){
+      if(err) {
+        throw err;
+      }else{
+        var markup = ReactDOMServer.renderToString(React.createElement(Index, {topicSaved: data.topicSaved}));
+        var htmlHead = ReactDOMServer.renderToStaticMarkup(
+          head(
+            null,
+            script({src: "https://unpkg.com/axios/dist/axios.min.js"}),
+            script({src: "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"}),
+            script({src: "./opp_index.js", type: "text/javascript"}),
+            link({href: "./colorbox.css", rel: "stylesheet"}),
+            script({src: "./jquery.colorbox.js", type: "text/javascript"}),
+            link({href: "./index.css", rel: "stylesheet"})
+          )
+        );
+        var htmlBody = ReactDOMServer.renderToStaticMarkup(
+          body(
+            null,
+            main({id: 'app', dangerouslySetInnerHTML: {__html: markup}}),
+            script({src: '/bundle_index.js'})
+          )
+        );
+        res.setHeader('Content-Type', 'text/html');
+        res.end(htmlHead + htmlBody);
+      }
+    });
+  },
+  topicPage: function(req, res){
+    let TopicPage = require('./views/Topic.jsx');
+    let askedTopic = req.query.topic;
+    jsonfile.readFile(wallHistory, function(err, data){
+      if(err) {
+        throw err;
+      }else{
+        let askedTopicData = data[askedTopic];
+        var markup = ReactDOMServer.renderToString(React.createElement(TopicPage, {rowRecordOne: askedTopicData.rowOne, rowRecordTwo: askedTopicData.rowTwo, rowRecordThree: askedTopicData.rowThree, rowRecordFour: askedTopicData.rowFour}));
+        var htmlHead = ReactDOMServer.renderToStaticMarkup(
+          head(
+            null,
+            script({src: "https://unpkg.com/axios/dist/axios.min.js"}),
+            script({src: "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"}),
+            script({src: "./opp_topic.js", type: "text/javascript"}),
+            link({href: "./colorbox.css", rel: "stylesheet"}),
+            script({src: "./jquery.colorbox.js", type: "text/javascript"}),
+            link({href: "./brick.css", rel: "stylesheet"})
+          )
+        );
+        var htmlBody = ReactDOMServer.renderToStaticMarkup(
+          body(
+            null,
+            main({id: 'app', dangerouslySetInnerHTML: {__html: markup}}),
+            script({src: '/bundle_topic.js'})
+          )
+        );
+        res.setHeader('Content-Type', 'text/html');
+        res.end(htmlHead + htmlBody);
+      }
+    })
+  }
+};
+const server_Post = {
+  post_Index_NewTopic: function(req, res){
+    jsonfile.readFile(topicFile, function(err, data){
+      if(err) {
+        throw err;
+      }else{
+        data.topicSaved.push({"id": req.body.id, "topic": req.body.topic, "url": req.body.url});
+        jsonfile.writeFile(topicFile, data, function(err){
+          if(err) throw err;
+        });
+        res.send(data);
+      }
+    });
+    jsonfile.readFile(wallHistory, function(err, data){
+      if(err) {
+        throw err;
+      }else{
+        let original = data.rowOriginal;
+        data[req.body.id] = {
+          "rowOne":original,
+          "rowTwo": original,
+          "rowThree": original,
+          "rowFour": original
+        };
+        server_Post.writeJsonFile(data);
+      }
+    });
+  },
+  postRow: function(req, res){
+    jsonfile.readFile(wallHistory, function(err, data){
+      if(err) {
+        throw err;
+      }else{
+        /*
+        switch (req.body.rowId) {
+          case 'rowOne':
+            var newData = {
+              "rowOne": req.body.rowCode,
+              "rowTwo": data.rowTwo,
+              "rowThree": data.rowThree,
+              "rowFour": data.rowFour,
+              "rowOriginal": data.rowOriginal
+            }
+            server_Post.writeJsonFile(newData);
+            break;
+          case 'rowTwo':
+            var newData = {
+              "rowOne": data.rowOne,
+              "rowTwo": req.body.rowCode,
+              "rowThree": data.rowThree,
+              "rowFour": data.rowFour,
+              "rowOriginal": data.rowOriginal
+            }
+            server_Post.writeJsonFile(newData);
+            break;
+          case 'rowThree':
+            var newData = {
+              "rowOne": data.rowOne,
+              "rowTwo": data.rowTwo,
+              "rowThree": req.body.rowCode,
+              "rowFour": data.rowFour,
+              "rowOriginal": data.rowOriginal
+            }
+            server_Post.writeJsonFile(newData);
+            break;
+          case 'rowFour':
+            var newData = {
+              "rowOne": data.rowOne,
+              "rowTwo": data.rowTwo,
+              "rowThree": data.rowThree,
+              "rowFour": req.body.rowCode,
+              "rowOriginal": data.rowOriginal
+            }
+            server_Post.writeJsonFile(newData);
+            break;
+          default:
+          var newData = {
+            "rowOne": data.rowOne,
+            "rowTwo": data.rowTwo,
+            "rowThree": data.rowThree,
+            "rowFour": data.rowFour,
+            "rowOriginal": req.body.rowCode
+          }
+          server_Post.writeJsonFile(newData);
+        };
+        */
+        console.log(req.originalUrl);
+        res.send("Update success!");
+      }
+    });
+  },
+  writeJsonFile: function (newData) {
+    jsonfile.writeFile(wallHistory, newData, function(err){
+      if(err) throw err;
+    });
+  }
+};
+
 app.set('view engine', 'jsx');
 app.set('views', __dirname + '/views');
 app.engine('jsx', require('express-react-views').createEngine({ transformViews: false }));
@@ -32,7 +197,7 @@ app.use(express.static(__dirname + '/data'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use('/bundle.js', function(req, res){
+app.use('/bundle_index.js', function(req, res){
   res.setHeader('content-type', 'application/javascript');
 
   browserify({debug: true})
@@ -40,63 +205,40 @@ app.use('/bundle.js', function(req, res){
       presets: ["react", "es2015"],
       compact: false
     }))
-    .require("./js/app_topicWall.js", {entry: true})
+    .require("./js/app_index.js", {entry: true})
     .bundle()
     .pipe(res);
 });
 
-var dataFile = path.join(__dirname+'/data/wallHistory.json');
+app.use('/bundle_topic.js', function(req, res){
+  res.setHeader('content-type', 'application/javascript');
+
+  browserify({debug: true})
+    .transform(babelify.configure({
+      presets: ["react", "es2015"],
+      compact: false
+    }))
+    .require("./js/app_topic.js", {entry: true})
+    .bundle()
+    .pipe(res);
+});
 
 app.get('/', function(req, res){
-  var TopicPage = require('./views/topic_Wall.jsx');
-  jsonfile.readFile(dataFile, function(err, data){
-    if(err) {
-      throw err;
-    }else{
-      var data = data.row.rowOne;
-      var markup = ReactDOMServer.renderToString(React.createElement(TopicPage, {rowRecordOne: data}));
-      var htmlHead = ReactDOMServer.renderToStaticMarkup(
-        head(
-          null,
-          script({src: "https://unpkg.com/axios/dist/axios.min.js"}),
-          script({src: "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"}),
-          script({src: "./opp_topicWall.js", type: "text/javascript"}),
-          link({href: "./colorbox.css", rel: "stylesheet"}),
-          script({src: "./jquery.colorbox.js", type: "text/javascript"}),
-          link({href: "./brick.css", rel: "stylesheet"})
-        )
-      );
-      var htmlBody = ReactDOMServer.renderToStaticMarkup(
-        body(
-          null,
-          main({id: 'app', dangerouslySetInnerHTML: {__html: markup}}),
-          script({src: '/bundle.js'})
-        )
-      );
+  server_Get.index(req, res);
+})
 
-      res.setHeader('Content-Type', 'text/html');
-      res.end(htmlHead+htmlBody);
-    }
-  })
+app.get('/topic.jsx', function(req, res){
+  server_Get.topicPage(req, res);
 });
 
-//var index_brick = 1;
-app.post('/data/rowhistory', function(req, res){
-  jsonfile.readFile(dataFile, function(err, data){
-    if(err) {
-      throw err;
-    }else{
-      data["row"] = {
-        "rowOne":req.body.row
-      };
-      jsonfile.writeFile(dataFile, data, function(err){
-        if(err) throw err;
-      });
-      //index_brick ++;
-      res.send("Update success!"+data);
-    }
-  });
+app.post('/rowupdate', function(req, res){
+  server_Post.postRow(req, res);
 });
+
+app.post('/index/newtopic', function(req, res){
+  server_Post.post_Index_NewTopic(req, res);
+});
+
 
 app.listen(3000);
 console.log("Running at Port 3000~");
